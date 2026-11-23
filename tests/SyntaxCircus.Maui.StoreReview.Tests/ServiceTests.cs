@@ -9,8 +9,8 @@ public sealed class ServiceTests
     {
         var service = new UnavailableStoreReviewService();
         service.CanOpenStoreReviewPage.ShouldBeFalse();
-        (await service.RequestInAppReviewAsync()).ShouldBeFalse();
-        (await service.OpenStoreReviewPageAsync()).ShouldBeFalse();
+        (await service.RequestInAppReviewAsync(TestContext.Current.CancellationToken)).ShouldBeFalse();
+        (await service.OpenStoreReviewPageAsync(TestContext.Current.CancellationToken)).ShouldBeFalse();
     }
 
     [Fact]
@@ -50,16 +50,16 @@ public sealed class ServiceTests
     {
         var fake = new FakeStoreReviewService();
         fake.CanOpenStoreReviewPage.ShouldBeTrue();
-        (await fake.RequestInAppReviewAsync()).ShouldBeTrue();
-        (await fake.OpenStoreReviewPageAsync()).ShouldBeTrue();
+        (await fake.RequestInAppReviewAsync(TestContext.Current.CancellationToken)).ShouldBeTrue();
+        (await fake.OpenStoreReviewPageAsync(TestContext.Current.CancellationToken)).ShouldBeTrue();
 
         fake.CanOpenStoreReviewPageResult = false;
         fake.InAppReviewResult = false;
         fake.OpenPageResult = false;
         fake.CanOpenStoreReviewPage.ShouldBeFalse();
-        (await fake.RequestInAppReviewAsync()).ShouldBeFalse();
-        (await fake.RequestInAppReviewAsync()).ShouldBeFalse();
-        (await fake.OpenStoreReviewPageAsync()).ShouldBeFalse();
+        (await fake.RequestInAppReviewAsync(TestContext.Current.CancellationToken)).ShouldBeFalse();
+        (await fake.RequestInAppReviewAsync(TestContext.Current.CancellationToken)).ShouldBeFalse();
+        (await fake.OpenStoreReviewPageAsync(TestContext.Current.CancellationToken)).ShouldBeFalse();
 
         fake.InAppRequestCount.ShouldBe(3);
         fake.OpenPageCount.ShouldBe(2);

@@ -27,6 +27,21 @@ jobs:
       - name: Pack
         run: dotnet pack SyntaxCircus.Maui.StoreReview.slnx --no-build --configuration Release --output artifacts
 
+      # Fail the build if a platform asset went missing from the package.
+      - name: Verify package contents
+        run: |
+          package_path=$(find artifacts -maxdepth 1 -type f -name '*.nupkg' ! -name '*.snupkg' | head -n 1)
+          listing=$(unzip -Z1 "$package_path")
+          for pattern in \
+            'lib/net10.0/SyntaxCircus.Maui.StoreReview.dll' \
+            'lib/net10.0-android[0-9.]*/SyntaxCircus.Maui.StoreReview.dll' \
+            'lib/net10.0-ios[0-9.]*/SyntaxCircus.Maui.StoreReview.dll'; do
+            if ! grep -Eq "^${pattern}$" <<< "$listing"; then
+              echo "::error::Package is missing ${pattern}"
+              exit 1
+            fi
+          done
+
       - name: Upload package artifact
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: actions/upload-artifact@v4
