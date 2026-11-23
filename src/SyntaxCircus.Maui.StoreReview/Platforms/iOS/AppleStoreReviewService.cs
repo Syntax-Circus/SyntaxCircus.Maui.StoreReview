@@ -35,7 +35,11 @@ internal sealed class AppleStoreReviewService(StoreReviewOptions options) : ISto
                     return false;
                 }
 
+                // Deprecated from iOS 18 in favor of Swift-only AppStore.requestReview(in:), which has no .NET binding.
+                // The Objective-C API keeps working and is the supported path from managed code.
+#pragma warning disable CA1422
                 SKStoreReviewController.RequestReview(scene);
+#pragma warning restore CA1422
                 return true;
             }).ConfigureAwait(true);
         }
