@@ -1,5 +1,6 @@
 using Android.Gms.Tasks;
-using Com.Google.Android.Play.Core.Review;
+using CancellationToken = System.Threading.CancellationToken;
+using Xamarin.Google.Android.Play.Core.Review;
 using Microsoft.Maui.ApplicationModel;
 using AndroidTask = Android.Gms.Tasks.Task;
 
@@ -40,7 +41,7 @@ internal sealed class PlayStoreReviewService(StoreReviewOptions options) : IStor
                 return false;
             }
 
-            using var info = raw.JavaCast<ReviewInfo>();
+            using var info = Android.Runtime.Extensions.JavaCast<ReviewInfo>(raw);
             var current = Platform.CurrentActivity;
             if (current is null || cancellationToken.IsCancellationRequested)
             {
